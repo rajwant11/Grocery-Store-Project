@@ -2,26 +2,25 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public abstract class Product {
-    private String productName; // Changed from 'name'
-    private int stock; // Changed from 'quantity'
+    private String name;
+    private int quantity;
     private double price;
     private LocalDate expiryDate;
 
-    public Product(String productName, int stock, double price, String expiryDate) {
-        this.productName = productName;
-        this.stock = stock;
+    public Product(String name, int quantity, double price, String expiryDate) {
+        this.name = name;
+        this.quantity = quantity;
         this.price = price;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         this.expiryDate = LocalDate.parse(expiryDate, formatter);
     }
 
-    // Getters
-    public String getProductName() {
-        return productName;
+    public String getName() {
+        return name;
     }
 
-    public int getStock() {
-        return stock;
+    public int getQuantity() {
+        return quantity;
     }
 
     public double getPrice() {
@@ -32,9 +31,8 @@ public abstract class Product {
         return expiryDate;
     }
 
-    // Methods to update stock and price
     public void addStock(int amount) {
-        this.stock += amount;
+        this.quantity += amount;
     }
 
     public void updatePrice(double newPrice) {
@@ -42,13 +40,12 @@ public abstract class Product {
     }
 
     public boolean needsRestock() {
-        return stock < 5; // Example threshold
+        return quantity < 5;
     }
 
     public boolean isExpired() {
         return LocalDate.now().isAfter(expiryDate);
     }
 
-    // Abstract method for displaying product info
     public abstract void displayProductInfo();
 }

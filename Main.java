@@ -5,7 +5,7 @@ public class Main {
         InventoryManager manager = new InventoryManager();
         Scanner input = new Scanner(System.in);
 
-        System.out.println("Grocery Store ");
+        System.out.println("Welcome to the Grocery Store Inventory Management System");
 
         while (true) {
             System.out.println("\nChoose an option:");
@@ -17,7 +17,7 @@ public class Main {
 
             try {
                 int choice = input.nextInt();
-                input.nextLine();
+                input.nextLine(); // Clear newline
 
                 switch (choice) {
                     case 1:
@@ -48,13 +48,13 @@ public class Main {
 
     private static void addProduct(InventoryManager manager, Scanner input) {
         System.out.print("Enter product name: ");
-        String productName = input.nextLine(); // Updated variable name
+        String name = input.nextLine();
 
         System.out.print("Enter category (Fresh, Dairy, Snacks, Pulses, Oils, Spices, Drinks): ");
         String category = input.nextLine();
 
-        System.out.print("Enter stock: "); // Updated prompt
-        int stock = input.nextInt();
+        System.out.print("Enter quantity: ");
+        int quantity = input.nextInt();
 
         System.out.print("Enter price: ");
         double price = input.nextDouble();
@@ -63,28 +63,28 @@ public class Main {
         System.out.print("Enter expiry date (yyyy-MM-dd): ");
         String expiryDate = input.nextLine();
 
-        manager.addProduct(productName, category, stock, price, expiryDate);
+        manager.addProduct(name, category, quantity, price, expiryDate);
     }
 
     private static void updatePrice(InventoryManager manager, Scanner input) {
         System.out.print("Enter the product name to update price: ");
-        String productName = input.nextLine(); // Updated variable name
+        String name = input.nextLine();
 
         System.out.print("Enter the new price: ");
         double newPrice = input.nextDouble();
         input.nextLine(); // Clear newline
 
-        manager.updatePrice(productName, newPrice);
+        manager.updatePrice(name, newPrice);
     }
 
     private static void restock(InventoryManager manager, Scanner input) {
         System.out.print("Enter the product name to restock: ");
-        String productName = input.nextLine(); // Updated variable name
+        String name = input.nextLine();
 
         System.out.print("Enter the quantity to add: ");
         int amount = input.nextInt();
         input.nextLine(); // Clear newline
 
-        manager.restockProduct(productName, amount);
+        manager.restockProduct(name, amount);
     }
 }

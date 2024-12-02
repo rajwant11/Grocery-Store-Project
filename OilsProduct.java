@@ -1,12 +1,12 @@
 public class OilsProduct extends Product {
-    public OilsProduct(String productName, int stock, double price, String expiryDate) {
-        super(productName, stock, price, expiryDate);
+    public OilsProduct(String name, int quantity, double price, String expiryDate) {
+        super(name, quantity, price, expiryDate);
     }
 
     @Override
     public void displayProductInfo() {
-        System.out.println("Oils Product - Name: " + getProductName() +
-                ", Stock: " + getStock() +
+        System.out.println("Oils Product - Name: " + getName() +
+                ", Quantity: " + getQuantity() +
                 ", Price: $" + getPrice() +
                 ", Expiry Date: " + getExpiryDate());
     }

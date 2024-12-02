@@ -1,12 +1,12 @@
 public class SpicesProduct extends Product {
-    public SpicesProduct(String productName, int stock, double price, String expiryDate) {
-        super(productName, stock, price, expiryDate);
+    public SpicesProduct(String name, int quantity, double price, String expiryDate) {
+        super(name, quantity, price, expiryDate);
     }
 
     @Override
     public void displayProductInfo() {
-        System.out.println("Spices Product - Name: " + getProductName() +
-                ", Stock: " + getStock() +
+        System.out.println("Spices Product - Name: " + getName() +
+                ", Quantity: " + getQuantity() +
                 ", Price: $" + getPrice() +
                 ", Expiry Date: " + getExpiryDate());
     }
