@@ -1,37 +1,37 @@
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class InventoryManager implements InventoryActions {
     private Product[] products = new Product[100];
     private int productCount = 0;
-    private Scanner input = new Scanner(System.in);
 
     @Override
-    public void addProduct(String name, String category, int quantity, double price, String expiryDate) {
+    public void addProduct(String productName, String category, int stock, double price, String expiryDate) {
         try {
             Product product;
-            switch (category.toLowerCase()) {
+            category = category.trim().toLowerCase(); // Remove extra spaces and make lowercase
+
+            switch (category) {
                 case "fresh":
-                    product = new FreshProduct(name, quantity, price, expiryDate);
+                    product = new FreshProduct(productName, stock, price, expiryDate);
                     break;
                 case "dairy":
-                    product = new DairyProduct(name, quantity, price, expiryDate);
+                    product = new DairyProduct(productName, stock, price, expiryDate);
                     break;
                 case "snacks":
-                    product = new SnacksProduct(name, quantity, price, expiryDate);
+                    product = new SnacksProduct(productName, stock, price, expiryDate);
                     break;
                 case "pulses":
-                    product = new PulsesProduct(name, quantity, price, expiryDate);
+                    product = new PulsesProduct(productName, stock, price, expiryDate);
                     break;
                 case "oils":
-                    product = new OilsProduct(name, quantity, price, expiryDate);
+                    product = new OilsProduct(productName, stock, price, expiryDate);
                     break;
                 case "spices":
-                    product = new SpicesProduct(name, quantity, price, expiryDate);
+                    product = new SpicesProduct(productName, stock, price, expiryDate);
                     break;
                 case "drinks":
-                    product = new DrinksProduct(name, quantity, price, expiryDate);
+                    product = new DrinksProduct(productName, stock, price, expiryDate);
                     break;
                 default:
                     System.out.println("Unknown product category.");
@@ -50,12 +50,13 @@ public class InventoryManager implements InventoryActions {
         }
     }
 
+
     @Override
     public void displayInventory() {
         System.out.println("Checking for expired products...");
         for (int i = 0; i < productCount; i++) {
             if (products[i].isExpired()) {
-                System.out.println("** Removing expired product: " + products[i].getName() + " **");
+                System.out.println("** Removing expired product: " + products[i].getProductName() + " **");
                 removeProduct(i);
                 i--; // Adjust index after removal
             }
@@ -65,85 +66,68 @@ public class InventoryManager implements InventoryActions {
         for (int i = 0; i < productCount; i++) {
             products[i].displayProductInfo();
             if (products[i].needsRestock()) {
-                System.out.println("** Low stock alert! Restock needed for " + products[i].getName() + " **");
+                System.out.println("** Low stock alert! Restock needed for " + products[i].getProductName() + " **");
             }
         }
     }
 
     @Override
-    public void updatePrice(String name, double newPrice) {
-        try {
-            for (int i = 0; i < productCount; i++) {
-                if (products[i].getName().equalsIgnoreCase(name)) {
-                    products[i].updatePrice(newPrice);
-                    System.out.println("Price updated for " + name + " to $" + newPrice);
-                    saveInventoryToCSV(); // Save after updating the price
-                    return;
-                }
+    public void updatePrice(String productName, double newPrice) {
+        for (int i = 0; i < productCount; i++) {
+            if (products[i].getProductName().equalsIgnoreCase(productName)) {
+                products[i].updatePrice(newPrice);
+                System.out.println("Price updated for " + productName + " to $" + newPrice);
+                saveInventoryToCSV();
+                return;
             }
-            System.out.println("Product not found.");
-        } catch (Exception e) {
-            System.out.println("Error updating price: " + e.getMessage());
         }
+        System.out.println("Product not found.");
     }
 
     @Override
-    public void restockProduct(String name, int amount) {
-        try {
-            for (int i = 0; i < productCount; i++) {
-                if (products[i].getName().equalsIgnoreCase(name)) {
-                    products[i].addStock(amount);
-                    System.out.println("Restocked " + amount + " units of " + name);
-                    saveInventoryToCSV(); // Save after restocking
-                    return;
-                }
+    public void restockProduct(String productName, int amount) {
+        for (int i = 0; i < productCount; i++) {
+            if (products[i].getProductName().equalsIgnoreCase(productName)) {
+                products[i].addStock(amount);
+                System.out.println("Restocked " + amount + " units of " + productName);
+                saveInventoryToCSV();
+                return;
             }
-            System.out.println("Product not found.");
-        } catch (Exception e) {
-            System.out.println("Error restocking product: " + e.getMessage());
         }
+        System.out.println("Product not found.");
     }
 
     private void removeProduct(int index) {
         for (int i = index; i < productCount - 1; i++) {
             products[i] = products[i + 1];
         }
-        products[--productCount] = null; // Clear the last element and update count
+        products[--productCount] = null;
     }
 
-    // Method to save the inventory to a CSV file
-    public void saveInventoryToCSV() {
+    private void saveInventoryToCSV() {
         try (FileWriter writer = new FileWriter("updated_inventory.csv")) {
-            // Write CSV header
-            writer.write("Name,Category,Quantity,Price,ExpiryDate\n");
-
-            // Write each product's data to the CSV
+            writer.write("ProductName,Category,Stock,Price,ExpiryDate\n");
             for (int i = 0; i < productCount; i++) {
                 Product product = products[i];
                 String category;
-                if (product instanceof FreshProduct) {
-                    category = "Fresh";
-                } else if (product instanceof DairyProduct) {
-                    category = "Dairy";
-                } else if (product instanceof SnacksProduct) {
-                    category = "Snacks";
-                } else if (product instanceof PulsesProduct) {
-                    category = "Pulses";
-                } else if (product instanceof OilsProduct) {
-                    category = "Oils";
-                } else if (product instanceof SpicesProduct) {
-                    category = "Spices";
-                } else if (product instanceof DrinksProduct) {
-                    category = "Drinks";
-                } else {
-                    category = "Unknown";
-                }
-                writer.write(product.getName() + "," + category + "," + product.getQuantity() + "," + product.getPrice() + "," + product.getExpiryDate() + "\n");
-            }
+                if (product instanceof FreshProduct) category = "Fresh";
+                else if (product instanceof DairyProduct) category = "Dairy";
+                else if (product instanceof SnacksProduct) category = "Snacks";
+                else if (product instanceof PulsesProduct) category = "Pulses";
+                else if (product instanceof OilsProduct) category = "Oils";
+                else if (product instanceof SpicesProduct) category = "Spices";
+                else if (product instanceof DrinksProduct) category = "Drinks";
+                else category = "Unknown";
 
+                writer.write(product.getProductName() + "," +
+                        category + "," +
+                        product.getStock() + "," +
+                        product.getPrice() + "," +
+                        product.getExpiryDate() + "\n");
+            }
             System.out.println("Inventory saved to updated_inventory.csv successfully.");
         } catch (IOException e) {
-            System.out.println("Error saving inventory to CSV: " + e.getMessage());
+            System.out.println("Error saving inventory: " + e.getMessage());
         }
     }
 }

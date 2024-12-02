@@ -1,6 +1,6 @@
 public interface InventoryActions {
-    void addProduct(String name, String category, int quantity, double price, String expiryDate);
+    void addProduct(String productName, String category, int stock, double price, String expiryDate);
     void displayInventory();
-    void updatePrice(String name, double newPrice);
-    void restockProduct(String name, int amount);
+    void updatePrice(String productName, double newPrice);
+    void restockProduct(String productName, int amount);
 }
